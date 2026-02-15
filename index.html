@@ -42,6 +42,8 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive,sans-serif;overflow:hid
 #color-game{background:linear-gradient(180deg,#E8DAEF,#D5F5E3)}
 #count-game{background:linear-gradient(180deg,#FFF9C4,#FFCCBC)}
 #shape-game{background:linear-gradient(180deg,#B3E5FC,#C8E6C9)}
+#riddle-game{background:linear-gradient(180deg,#F3E5F5,#E1BEE7)}
+#match-game{background:linear-gradient(180deg,#FFF3E0,#FFE0B2)}
 
 .q-box{font-size:clamp(1.2rem,4vw,2.2rem);background:rgba(255,255,255,.88);padding:15px 30px;border-radius:20px;margin-bottom:20px;text-align:center;font-weight:bold;color:#333}
 .opts{display:flex;flex-wrap:wrap;justify-content:center;gap:15px;padding:10px}
@@ -62,6 +64,20 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive,sans-serif;overflow:hid
 .shape-preview{margin-bottom:25px}
 .shape-opt{background:#fff;border:5px solid #03A9F4;border-radius:20px;width:clamp(90px,22vw,140px);height:clamp(90px,22vw,140px);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .3s}
 .shape-opt:hover{transform:scale(1.08)}
+
+.riddle-text{font-size:clamp(1.1rem,3.5vw,1.8rem);background:rgba(255,255,255,.92);padding:20px 25px;border-radius:20px;margin-bottom:20px;text-align:center;color:#6A1B9A;line-height:1.5;max-width:500px;box-shadow:0 4px 15px rgba(106,27,154,.15)}
+.riddle-text .hint{font-size:clamp(.9rem,3vw,1.3rem);color:#999;margin-top:8px;font-style:italic}
+.riddle-opt{background:#fff;border:5px solid #CE93D8;border-radius:25px;width:clamp(100px,25vw,150px);height:clamp(100px,25vw,150px);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .3s;box-shadow:0 4px 15px rgba(0,0,0,.12)}
+.riddle-opt:hover{transform:scale(1.08)}
+.riddle-opt .em{font-size:clamp(2.2rem,7vw,4rem)}
+.riddle-opt .nm{font-size:clamp(.75rem,2.2vw,1.1rem);color:#555;font-weight:bold;margin-top:5px}
+
+.match-q{font-size:clamp(3rem,10vw,6rem);background:rgba(255,255,255,.92);padding:20px 35px;border-radius:25px;margin-bottom:10px;box-shadow:0 4px 15px rgba(0,0,0,.1)}
+.match-hint{font-size:clamp(1rem,3.5vw,1.6rem);color:#E65100;font-weight:bold;margin-bottom:20px}
+.match-opt{background:#fff;border:5px solid #FFB74D;border-radius:25px;width:clamp(100px,25vw,150px);height:clamp(100px,25vw,150px);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .3s;box-shadow:0 4px 15px rgba(0,0,0,.12)}
+.match-opt:hover{transform:scale(1.08)}
+.match-opt .em{font-size:clamp(2.2rem,7vw,4rem)}
+.match-opt .nm{font-size:clamp(.75rem,2.2vw,1.1rem);color:#555;font-weight:bold;margin-top:5px}
 
 .ok{border-color:#4CAF50!important;background:#E8F5E9!important;animation:pop .6s ease}
 .nope{animation:shake .5s ease;opacity:.5}
@@ -100,6 +116,8 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive,sans-serif;overflow:hid
     <div class="game-choice" onclick="go('color')"><span class="icon">🌈</span><span class="label">Kleuren<br>zoeken</span></div>
     <div class="game-choice" onclick="go('count')"><span class="icon">🔢</span><span class="label">Leren<br>tellen</span></div>
     <div class="game-choice" onclick="go('shape')"><span class="icon">🔷</span><span class="label">Vormen<br>herkennen</span></div>
+    <div class="game-choice" onclick="go('riddle')"><span class="icon">🤔</span><span class="label">Wie<br>ben ik?</span></div>
+    <div class="game-choice" onclick="go('match')"><span class="icon">🧩</span><span class="label">Wat hoort<br>erbij?</span></div>
   </div>
 </div>
 
@@ -113,6 +131,8 @@ body{font-family:'Comic Sans MS','Chalkboard SE',cursive,sans-serif;overflow:hid
   <div id="color-game" class="game-panel"></div>
   <div id="count-game" class="game-panel"></div>
   <div id="shape-game" class="game-panel"></div>
+  <div id="riddle-game" class="game-panel"></div>
+  <div id="match-game" class="game-panel"></div>
 </div>
 
 <div class="party" id="party">
@@ -144,10 +164,10 @@ var cur=null,score=0,stars=0,busy=false;
 // Nav
 function showMenu(){sClick();document.getElementById('start-screen').style.display='none';document.getElementById('game-select').style.display='flex'}
 function back(){sClick();document.getElementById('game-area').style.display='none';document.getElementById('party').style.display='none';document.getElementById('game-select').style.display='flex';hideAll();score=0;stars=0;updSc()}
-function hideAll(){['animal-game','color-game','count-game','shape-game'].forEach(function(id){document.getElementById(id).style.display='none'})}
+function hideAll(){['animal-game','color-game','count-game','shape-game','riddle-game','match-game'].forEach(function(id){document.getElementById(id).style.display='none'})}
 function go(t){sClick();cur=t;score=0;stars=0;document.getElementById('game-select').style.display='none';document.getElementById('game-area').style.display='block';updSc();nxt()}
 function updSc(){document.getElementById('sc').textContent='Punten: '+score;var s='';for(var i=0;i<stars;i++)s+='\u2B50';document.getElementById('st').textContent=s}
-function nxt(){document.getElementById('party').style.display='none';busy=false;hideAll();if(cur==='animal')mkAnimal();else if(cur==='color')mkColor();else if(cur==='count')mkCount();else if(cur==='shape')mkShape()}
+function nxt(){document.getElementById('party').style.display='none';busy=false;hideAll();if(cur==='animal')mkAnimal();else if(cur==='color')mkColor();else if(cur==='count')mkCount();else if(cur==='shape')mkShape();else if(cur==='riddle')mkRiddle();else if(cur==='match')mkMatch()}
 
 // Confetti
 function confetti(){var c=document.getElementById('cbox');var cl=['#FF6B35','#FFD700','#4CAF50','#2196F3','#E91E63','#9C27B0','#FF9800'];for(var i=0;i<40;i++){var d=document.createElement('div');d.className='conf';d.style.left=Math.random()*100+'vw';d.style.backgroundColor=cl[~~(Math.random()*cl.length)];d.style.borderRadius=Math.random()>.5?'50%':'2px';d.style.width=(8+Math.random()*10)+'px';d.style.height=(8+Math.random()*10)+'px';d.style.animationDuration=(2+Math.random()*2)+'s';d.style.animationDelay=(Math.random()*.5)+'s';c.appendChild(d)}setTimeout(function(){c.innerHTML=''},4000)}
@@ -234,6 +254,55 @@ function mkShape(){
   var o=shuf(SN).slice(0,4),c=o[~~(Math.random()*o.length)],tc=SC[~~(Math.random()*SC.length)];
   var h='<div class="q-box">Zoek de <b>'+c+'</b>!</div><div class="shape-preview">'+mkSvg(c,100,tc)+'</div><div class="opts">';
   o.forEach(function(s){var cl=SC[~~(Math.random()*SC.length)];h+='<div class="shape-opt" data-ok="'+(s===c?1:0)+'" onclick="chk(this)">'+mkSvg(s,70,cl)+'</div>'});
+  g.innerHTML=h+'</div>';
+}
+
+// Game 5: Riddles (Wie ben ik?)
+var RD=[
+  {q:'Ik heb 4 poten en ik blaf.\nIk ben je beste vriend!',h:'Waf waf!',a:'\u{1F436}',an:'Hond',w:['\u{1F431}','\u{1F430}','\u{1F42E}'],wn:['Kat','Konijn','Koe']},
+  {q:'Ik ben oranje met zwarte strepen.\nIk ben heel sterk!',h:'Grrr!',a:'\u{1F42F}',an:'Tijger',w:['\u{1F981}','\u{1F434}','\u{1F43B}'],wn:['Leeuw','Paard','Beer']},
+  {q:'Ik kan vliegen.\nIk leg eitjes in een nest.',h:'Tjielp!',a:'\u{1F426}',an:'Vogel',w:['\u{1F41F}','\u{1F98B}','\u{1F438}'],wn:['Vis','Vlinder','Kikker']},
+  {q:'Ik zwem in het water.\nIk heb schubben en vinnen.',h:'Blub blub!',a:'\u{1F41F}',an:'Vis',w:['\u{1F986}','\u{1F40A}','\u{1F999}'],wn:['Eend','Krokodil','Lama']},
+  {q:'Ik ben heel groot en grijs.\nIk heb een lange slurf!',h:'Toet toet!',a:'\u{1F418}',an:'Olifant',w:['\u{1F42D}','\u{1F993}','\u{1F43C}'],wn:['Muis','Zebra','Panda']},
+  {q:'Ik spring heel ver.\nIk zeg kwaak kwaak!',h:'Kwaak!',a:'\u{1F438}',an:'Kikker',w:['\u{1F407}','\u{1F422}','\u{1F40D}'],wn:['Konijn','Schildpad','Slang']},
+  {q:'Ik ben geel en ik piep.\nIk kom uit een eitje!',h:'Piep piep!',a:'\u{1F425}',an:'Kuiken',w:['\u{1F414}','\u{1F985}','\u{1F9A9}'],wn:['Kip','Adelaar','Flamingo']},
+  {q:'Ik ben heel langzaam.\nIk draag mijn huisje op mijn rug.',h:'...',a:'\u{1F40C}',an:'Slak',w:['\u{1F422}','\u{1F41B}','\u{1F990}'],wn:['Schildpad','Rups','Garnaal']},
+  {q:'Ik heb zwart-witte strepen.\nIk lijk op een paard!',h:'Hihi!',a:'\u{1F993}',an:'Zebra',w:['\u{1F434}','\u{1F42E}','\u{1F98C}'],wn:['Paard','Koe','Hert']},
+  {q:'Ik maak honing.\nIk kan zoemen en vliegen!',h:'Zzzzoem!',a:'\u{1F41D}',an:'Bij',w:['\u{1F98B}','\u{1F41E}','\u{1F997}'],wn:['Vlinder','Lieveheers-\nbeestje','Krekel']}
+];
+function mkRiddle(){
+  var g=document.getElementById('riddle-game');g.style.display='flex';
+  var r=RD[~~(Math.random()*RD.length)];
+  var opts=[{e:r.a,n:r.an,ok:1}];
+  for(var i=0;i<r.w.length;i++)opts.push({e:r.w[i],n:r.wn[i],ok:0});
+  opts=shuf(opts);
+  var lines=r.q.split('\n').join('<br>');
+  var h='<div class="riddle-text">'+lines+'<div class="hint">'+r.h+'</div></div><div class="opts">';
+  opts.forEach(function(o){h+='<div class="riddle-opt" data-ok="'+o.ok+'" onclick="chk(this)"><span class="em">'+o.e+'</span><span class="nm">'+o.n+'</span></div>'});
+  g.innerHTML=h+'</div>';
+}
+
+// Game 6: What goes together? (Wat hoort erbij?)
+var MT=[
+  {q:'\u{1F436}',qn:'Hond',a:'\u{1F9B4}',an:'Botje',w:['\u{1F95C}','\u{1F41F}','\u{1F33D}'],wn:['Nootje','Vis','Mais']},
+  {q:'\u{1F431}',qn:'Kat',a:'\u{1F9F6}',an:'Bolletje wol',w:['\u{26BD}','\u{1F9F8}','\u{1F3B8}'],wn:['Voetbal','Knuffel','Gitaar']},
+  {q:'\u{1F430}',qn:'Konijn',a:'\u{1F955}',an:'Wortel',w:['\u{1F969}','\u{1F354}','\u{1F370}'],wn:['Vlees','Hamburger','Taart']},
+  {q:'\u{1F426}',qn:'Vogel',a:'\u{1FAB9}',an:'Nestje',w:['\u{1F3E0}','\u{26FA}','\u{1F697}'],wn:['Huis','Tent','Auto']},
+  {q:'\u{2602}\uFE0F',qn:'Paraplu',a:'\u{1F327}\uFE0F',an:'Regen',w:['\u2600\uFE0F','\u{1F30A}','\u2744\uFE0F'],wn:['Zon','Golven','Sneeuw']},
+  {q:'\u270F\uFE0F',qn:'Potlood',a:'\u{1F4D6}',an:'Boek',w:['\u{1F3B9}','\u{1F4FA}','\u{1F52D}'],wn:['Piano','TV','Telescoop']},
+  {q:'\u{1F6CF}\uFE0F',qn:'Bed',a:'\u{1F319}',an:'Maan',w:['\u2600\uFE0F','\u26C8\uFE0F','\u{1F308}'],wn:['Zon','Onweer','Regenboog']},
+  {q:'\u{1F333}',qn:'Boom',a:'\u{1F342}',an:'Blaadje',w:['\u{1F48E}','\u2744\uFE0F','\u{1F319}'],wn:['Diamant','Sneeuw','Maan']},
+  {q:'\u{1F6BF}',qn:'Douche',a:'\u{1F9FC}',an:'Zeep',w:['\u{1F36D}','\u{1F9C1}','\u{1F382}'],wn:['Lolly','Cupcake','Taart']},
+  {q:'\u{1F3A8}',qn:'Schilderen',a:'\u{1F58C}\uFE0F',an:'Kwast',w:['\u{1F52A}','\u{1F527}','\u{1F50C}'],wn:['Mes','Moer-\nsleutel','Stekker']}
+];
+function mkMatch(){
+  var g=document.getElementById('match-game');g.style.display='flex';
+  var m=MT[~~(Math.random()*MT.length)];
+  var opts=[{e:m.a,n:m.an,ok:1}];
+  for(var i=0;i<m.w.length;i++)opts.push({e:m.w[i],n:m.wn[i],ok:0});
+  opts=shuf(opts);
+  var h='<div class="match-q">'+m.q+'</div><div class="match-hint">Wat hoort bij de '+m.qn+'?</div><div class="opts">';
+  opts.forEach(function(o){h+='<div class="match-opt" data-ok="'+o.ok+'" onclick="chk(this)"><span class="em">'+o.e+'</span><span class="nm">'+o.n+'</span></div>'});
   g.innerHTML=h+'</div>';
 }
 
